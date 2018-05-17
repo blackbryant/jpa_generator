@@ -2,8 +2,8 @@
 
 使用說明
 語法： codeGen.py [options] [file]  <br>
-指令參數 ： -i --ifile    <br>
-指令參數 ： -h -help .   <br>
+指令參數： -i --ifile    <br>
+指令參數： -h -help .   <br>
 
 本產生器用來產生Bean, Repository, compositePK, Service interface, Service impelemt的類別，目錄預設的方式
 
@@ -14,16 +14,16 @@
  - 服務介面目錄  : 根目錄＋service.face 
  - 服務實作目錄 ： 根目錄＋.service.imp
 
-範例1： python codeGen.py --help
->結果
-===JPA Generator Tool===
-syntax: codeGen.py [options] [file]
--i --ifile 
-example: 
-codeGen.py -if baseP01.dao
+範例1： python codeGen.py --help <br>
+>結果 <br>
+===JPA Generator Tool=== <br>
+syntax: codeGen.py [options] [file] <br>
+-i --ifile <br>
+example:  <br>
+codeGen.py -if baseP01.dao <br>
 
 範例2：python codeGen.py -i baseP01.jpa
->結果
+>結果<br>
 Input file : baseP01.jpa
 Bean output file : com/blackteam/cms/base/bean/BaseP01Bean.java  <br>
 Repository output file : com/blackteam/cms/base/repository/BaseP01Repository.java  <br>
