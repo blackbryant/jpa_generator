@@ -1,9 +1,9 @@
 # JPA Class 產生器
 
 使用說明
-語法： codeGen.py [options] [file]
-指令參數 ： -i --ifile 
-指令參數 ： -h -help
+語法： codeGen.py [options] [file]  <br>
+指令參數 ： -i --ifile    <br>
+指令參數 ： -h -help .   <br>
 
 本產生器用來產生Bean, Repository, compositePK, Service interface, Service impelemt的類別，目錄預設的方式
 
@@ -25,12 +25,8 @@ codeGen.py -if baseP01.dao
 範例2：python codeGen.py -i baseP01.jpa
 >結果
 Input file : baseP01.jpa
-Bean output file : com/blackteam/cms/base/bean/BaseP01Bean.java
-Repository output file : com/blackteam/cms/base/repository/BaseP01Repository.java
-PK compiste output file : com/blackteam/cms/base/bean/compositePK/BaseP01BeanPK.java
-Service interface output file :com/blackteam/cms/base/service/face/IBaseP01.java
-Service implement output file : com/blackteam/cms/base/service/imp/BaseP01ServiceImp.java
-
-
-
-
+Bean output file : com/blackteam/cms/base/bean/BaseP01Bean.java  <br>
+Repository output file : com/blackteam/cms/base/repository/BaseP01Repository.java  <br>
+PK compiste output file : com/blackteam/cms/base/bean/compositePK/BaseP01BeanPK.java  <br>
+Service interface output file :com/blackteam/cms/base/service/face/IBaseP01.java  <br>
+Service implement output file : com/blackteam/cms/base/service/imp/BaseP01ServiceImp.java  <br>
