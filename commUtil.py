@@ -28,9 +28,11 @@ def getCurTime():
     return str
 
 def writeFile(dir,fileName, content):
+    fullFileName= dir+os.sep+fileName
     mkdirs(dir)
     with open(dir+os.sep+fileName, "w") as file:
         file.write(content)
+    return fullFileName
 
 def mkdirs(inputDir):
     if not os.path.isdir(inputDir) : 

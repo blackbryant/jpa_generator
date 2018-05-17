@@ -16,23 +16,15 @@ service_default_interface_location=".service.face"
 service_default_imp_location=".service.imp"
 dot_java=".java"
 
-def main(argv):
- 
-  inputfile = ''
-  outputfile = ''
-  try:
-     opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-  except getopt.GetoptError:
-     print 'codeGen.py -i <inputfile> -o <outputfile>'
-     sys.exit(2)
-  for opt, arg in opts:
-     if opt == '-h':
-        print 'codeGen.py -i <inputfile>'
-        sys.exit()
-     elif opt in ("-i", "--ifile"):
-        inputfile = arg 
-  print 'Input file is "', inputfile
-  print 'Output file is "', outputfile
+
+def usage():
+  print "===JPA Generator Tool==="
+  print "syntax: codeGen.py [options] [file]"
+  print "-i --ifile "
+  print "example: "
+  print "codeGen.py -if baseP01.dao"
+  sys.exit(0) 
+
 
 
 def get_bean(filename):
@@ -121,22 +113,57 @@ def get_detail(str_line):
    return data.split(",")
 
 
-
-if __name__ == "__main__":
-  bean.bean_master =get_bean("baseP01.dao")
+def execute(filename):
+  bean.bean_master =get_bean(filename)
   base_location = bean.bean_master.package
   dao_script=jpaGen.choseDaoScript(bean)
   bean_script=jpaGen.choseBeanScript(bean)
   pk_script = jpaGen.genPKClass(bean)
 
-  commUtil.writeFile(commUtil.dot2Slash(base_location+bean_default_location)  ,jpaGen.getBeanClassName(bean.bean_master.entity)+dot_java,bean_script) 
-  commUtil.writeFile(commUtil.dot2Slash(base_location+repository_defalut_location)  ,jpaGen.getRepositoryClassName(bean.bean_master.entity)+dot_java,dao_script) 
+  bean_filename=commUtil.writeFile(commUtil.dot2Slash(base_location+bean_default_location)  ,jpaGen.getBeanClassName(bean.bean_master.entity)+dot_java,bean_script) 
+  resitory_filename=commUtil.writeFile(commUtil.dot2Slash(base_location+repository_defalut_location)  ,jpaGen.getRepositoryClassName(bean.bean_master.entity)+dot_java,dao_script) 
+  pk_filename=""
   if pk_script is not "":
-      commUtil.writeFile(commUtil.dot2Slash(base_location+pk_defalut_location)  ,jpaGen.getPKClassName(bean.bean_master.entity)+dot_java,pk_script) 
+      pk_filename=commUtil.writeFile(commUtil.dot2Slash(base_location+pk_defalut_location)  ,jpaGen.getPKClassName(bean.bean_master.entity)+dot_java,pk_script) 
 
   #service
   interface_service_script = serviceGen.getJPAInterfaceService(bean)
-  commUtil.writeFile(commUtil.dot2Slash(base_location+service_default_interface_location), serviceGen.getInterfaceClassName(bean.bean_master.entity)+dot_java,interface_service_script )
+  sface_filename=commUtil.writeFile(commUtil.dot2Slash(base_location+service_default_interface_location), serviceGen.getInterfaceClassName(bean.bean_master.entity)+dot_java,interface_service_script )
   imp_service_script = serviceGen.getJPAService(bean,base_location+repository_defalut_location)
-  commUtil.writeFile(commUtil.dot2Slash(base_location+service_default_imp_location), serviceGen.getImpClassName(bean.bean_master.entity)+dot_java,imp_service_script )
+  simp_filename=commUtil.writeFile(commUtil.dot2Slash(base_location+service_default_imp_location), serviceGen.getImpClassName(bean.bean_master.entity)+dot_java,imp_service_script )
+  return bean_filename, resitory_filename, pk_filename, sface_filename, simp_filename
+
+
+
+def main(argv):
+ 
+  inputfile = ''
+  outputfile = ''
+  if not len(sys.argv[1:]):
+     usage()
+
+  try:
+     opts, args = getopt.getopt(sys.argv[1:],"i:h",["help","ifile"])
+  except getopt.GetoptError:
+     print 'codeGen.py -i <inputfile> -o <outputfile>'
+     sys.exit(2)
+  for opt, arg in opts:
+    print arg
+    if opt in ('-h',"--help"):
+      usage()
+
+    elif opt in ("-i","--ifile"):
+      inputfile = arg
+      b,r,pk,sf,si =execute(inputfile)
+
+  print 'Input file : ' +inputfile
+  print 'Bean output file : '+b
+  print 'Repository output file : '+r
+  print 'PK compiste output file : '+pk
+  print 'Service interface output file :'+sf
+  print 'Service implement output file : '+si
+
+if __name__=="__main__":
+  main(sys.argv)
+
 
