@@ -1,7 +1,7 @@
 #Meta
 ------------------------------
 project  :  內容管理系統
-table    :  DBO.BASEP01
+table    :  BASEP01
 class    :  baseP01DAO
 package  :  com.blackteam.cms.base
 entity   :  BaseP01
@@ -15,32 +15,23 @@ tool     :  RowMapper
 #name   		   dataType   		   isKey?(y/n)   		   description    field name  field width   		   format   		   default   		   
 ---------------------------------------------------------------------------------------------------------------------------------
 compId     			String   		   n   		   公司別        	compId		18		   		  String   		   	""
-RefCode    			String   		   y   		   參數代碼       	 ref_code 	10   		   		String   		   	""
-RefName    			String   		   y   		   參數名稱          ref_name 			50   		   		String   		   	""
-RefDesc    	 		String   		   n   		   用途說明       	 ref_desc	100  		   		String   		  	""
-RefValue   			String   		   n 		   參數值        	 ref_value		18   		   		String   		  	""
-Field1Name 			String   		   n 		 	明細欄位1名稱  	  field1_name	20   		  		String   		   	""
-Field2Name 			String   		   n 		     明細欄位2名稱    field2_name		20   		   		String   		   	""
-Field3Name 			String   		   n   		   明細欄位3名稱      field3_name		20   		   		String   		   	""
-Field4Name 			String   		   n   	     明細欄位4名稱        field4_name		20  		  	  String   		   	""
-Field5Name 	   		String   	 	   n   		   明細欄位5名稱 	  field5_name		20   		   		String   		 		""
-Field6Name    		String   	 	   n   		   明細欄位6名稱 	  field6_name		20	 					String   		 	  ""
-Field7Name 	    	String   	 	   n   		   明細欄位7名稱 	  field7_name		20	   				String   		 	  ""
-Field8Name   		String   	 	   n   		   明細欄位8名稱 	  field8_name		20	   				String  		   	""
-Field9Name 		  	String   	 	   n   		   明細欄位9名稱 	  field9_name		20		 	 			String  		   	""
-Field10Name	  		String   		   n   		   明細欄位10名稱	  field10_name		20 						String			   	""
+refCode    			String   		   y   		   參數代碼       	 ref_code 	10   		   		String   		   	""
+fefName    			String   		   y   		   參數名稱          ref_name 			50   		   		String   		   	""
+refDesc    	 		String   		   n   		   用途說明       	 ref_desc	100  		   		String   		  	""
+refValue   			String   		   n 		   參數值        	 ref_value		18   		   		String   		  	""
+field1Name 			String   		   n 		 	明細欄位1名稱  	  field1_name	20   		  		String   		   	""
+field2Name 			String   		   n 		     明細欄位2名稱    field2_name		20   		   		String   		   	""
+field3Name 			String   		   n   		   明細欄位3名稱      field3_name		20   		   		String   		   	""
+field4Name 			String   		   n   	     明細欄位4名稱        field4_name		20  		  	  String   		   	""
+field5Name 	   		String   	 	   n   		   明細欄位5名稱 	  field5_name		20   		   		String   		 		""
+field6Name    		String   	 	   n   		   明細欄位6名稱 	  field6_name		20	 					String   		 	  ""
+field7Name 	    	String   	 	   n   		   明細欄位7名稱 	  field7_name		20	   				String   		 	  ""
+field8Name   		String   	 	   n   		   明細欄位8名稱 	  field8_name		20	   				String  		   	""
+field9Name 		  	String   	 	   n   		   明細欄位9名稱 	  field9_name		20		 	 			String  		   	""
+field10Name	  		String   		   n   		   明細欄位10名稱	  field10_name		20 						String			   	""
 createUser 		  	String   		   n   		   建立使用者         create_user 		10		   			String   		   	""   
-createDate 	    	String   		   n   		   建立日期       	 create_date 	8		   				date   		   		""   
-createTime 			String   		   n   		   建立時間          create_time		6	   					time   		   		""   
+createDate 	    	Date   		   n   		   建立日期       	 create_date 	10		   				date   		   		""   
+createTime 			Time   		   n   		   建立時間          create_time		8	   					time   		   		""   
 updateUser     		String   		   n   		   修改使用者        update_user 		10	   				String   		   	""   
-updateDate     		String   		   n   		   修改日期       	 update_date  	8	   					date   		   		""   
-updateTime   		String   		   n   		   修改時間          update_time		6   					time   		   		""   
-		
-	  
-	  
-		
-		
-			
-			
-			
-			
+updateDate     		Date   		   n   		   修改日期       	 update_date  	10	   					date   		   		""   
+updateTime   		Time   		   n   		   修改時間          update_time		8   					time   		   		""   
