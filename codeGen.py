@@ -65,8 +65,8 @@ def get_bean(filename):
               detail.field_desc=data[3]
               detail.field_name=data[4]
               detail.field_width=data[5]
-              detail.field_format=data[6]
-              detail.field_default=data[7]
+              #detail.field_format=data[6]
+              detail.field_default=data[6]
               #print(detail)
               master.add_detail(detail)
       

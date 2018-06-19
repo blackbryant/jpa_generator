@@ -74,9 +74,9 @@ class bean_detail():
    @property
    def field_width(self):
        return self.field_width
-   @property
-   def field_format(self):
-       return self.field_format   
+   #@property
+   #def field_format(self):
+   #    return self.field_format   
    @property
    def field_default(self):
        return self.field_default 

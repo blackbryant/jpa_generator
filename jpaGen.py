@@ -9,7 +9,8 @@ import commUtil
 FOUR_SPACE="    "
 BEAN_PRE_NAME="Bean"
 BEAN_REPOSITORY_NAME="Repository"
-
+BEAN_PK_NAME="BeanPK"
+PACKAGE_PK_NAME=".compositePK"
 
 
 def getTitle(bean):
@@ -126,11 +127,11 @@ def getJPA1VO(bean):
 	context.append(FOUR_SPACE+"/** \n"+FOUR_SPACE+" * 將所有的欄位 reset 成預設值 \n"+FOUR_SPACE+" * @since  "+commUtil.getCurDate()+"\n" +""+FOUR_SPACE+" */\n")
 	context.append(FOUR_SPACE+"public void clear() { "+"\n")
 	for detail in bean.bean_master.get_detail() :
-	   if detail.field_format=="String":
+	   if detail.field_dataType=="String":
 	      context.append(FOUR_SPACE+"   this."+detail.entity_name+"=\"\" ;\n" )
-	   elif detail.field_format=="int":
+	   elif detail.field_dataType=="int":
 	      context.append(FOUR_SPACE+"   this."+detail.entity_name+"=0 ;\n" )
-	   elif detail.field_format=="date" or detail.field_format=="time" :
+	   elif detail.field_dataType=="date" or detail.field_dataType=="time" :
 	      context.append(FOUR_SPACE+"   this."+detail.entity_name+"= new Date() ;\n" )
 	context.append(FOUR_SPACE+"} "+"\n")
 
@@ -163,7 +164,7 @@ def getJPA1VO(bean):
 	               +FOUR_SPACE+"/*----------------------------------------------------------------------------*/"+"\n"*2)
 	
 	for detail in bean.bean_master.get_detail() :
-	   if detail.field_format=="String":
+	   if detail.field_dataType=="String":
 	       #setter
 	       context.append(FOUR_SPACE*2+"/** "+"\n")
 	       context.append(FOUR_SPACE*2+" * "+"設定"+detail.field_desc+"\n")
@@ -188,7 +189,7 @@ def getJPA1VO(bean):
 	       context.append(FOUR_SPACE*2+"public "+detail.field_dataType+" get"+detail.entity_name[0].upper()+detail.entity_name[1:]+"S(){ \n")
 	       context.append(FOUR_SPACE*3+" return this."+detail.entity_name+" ; \n")
 	       context.append(FOUR_SPACE*2+"} "+"\n")
-	   elif detail.field_format.upper()=="DATE" or detail.field_format.upper()=="TIME" :
+	   elif detail.field_dataType.upper()=="DATE" or detail.field_dataType.upper()=="TIME" :
 	       #setter
 	       context.append(FOUR_SPACE*2+"/** "+"\n")
 	       context.append(FOUR_SPACE*2+" * "+"設定"+detail.field_desc+"\n")
@@ -216,6 +217,7 @@ def getJPA1VO(bean):
 	context.append("} ")
 	return title+packageName+str(getImportVOJar())+preface+''.join(context)   
 
+################################PK composition#############################################
 '''
    產出PK類別
 '''
@@ -228,8 +230,10 @@ def genPKClass(bean):
 	   return ""
 
 	title=getTitle(bean)
-	packageName = "package "+bean.bean_master.package+";"+"\n"*3   
+	packageName = "package "+bean.bean_master.package+PACKAGE_PK_NAME+";"+"\n"*3   
 	voName=""+bean.bean_master.entity[0].upper()+bean.bean_master.entity[1:]+'PK'
+	
+	#Field
 	context=[]
 	context.append("public class "+voName+" implements Serializable { \n")
 	pk=[]
@@ -242,14 +246,18 @@ def genPKClass(bean):
 	       context.append(FOUR_SPACE+" */"+"\n")
 	       context.append(FOUR_SPACE+"@NotNull "+"\n")
 	       context.append(FOUR_SPACE+"@Size(max = "+detail.field_width+") "+"\n")
+	       context.append(FOUR_SPACE+"@Max(value="+detail.field_width+", message = \""+detail.field_desc+"長度不能超過["+detail.field_width+"] \")"+"\n")
 	       context.append(FOUR_SPACE+"private String "+detail.entity_name +";"+"\n"*2)
 	       pk.append(detail.field_dataType + ' '+detail.field_name)
 	       constructor_field = constructor_field +FOUR_SPACE+" this."+detail.field_name+"="+detail.field_name+"\n"
+	
+	
 	#constructor
 	context.append(FOUR_SPACE+"public "+voName+"( "+','.join(pk)+") {"+"\n")
 	context.append(FOUR_SPACE+constructor_field)
 
 	context.append(FOUR_SPACE+"} "+"\n")
+	
 	#setter/getter
 	for detail in bean.bean_master.get_detail() :
 	   if detail.field_isKey.upper() == "Y":
@@ -264,32 +272,35 @@ def genPKClass(bean):
 	context.append(FOUR_SPACE*2+"return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE) "+"\n"*2)
 
 	for detail in bean.bean_master.get_detail() :
-	    context.append(FOUR_SPACE*2+".append(\""+detail.entity_name+"\", "+detail.entity_name+") "+"\n")
+	    if detail.field_isKey.upper() == "Y":
+	       context.append(FOUR_SPACE+".append(\""+detail.entity_name+"\", "+detail.entity_name+") "+"\n")
+	context.append(".toString(); ")
+
 	context.append(FOUR_SPACE+"} "+"\n")
 
 	context.append(" } "+"\n"*2)
-	return  title+packageName+''.join(context)
+	return  title+packageName+getImportVOJar()+''.join(context)
 
 
 def getGetterAndSetterStr(detail):
 	sgStr=[]
-	if detail.field_format=="String":
+	if detail.field_dataType=="String":
 	    #setter
-	    sgStr.append(FOUR_SPACE*2+"/** "+"\n")
-	    sgStr.append(FOUR_SPACE*2+" * "+"設定"+detail.field_desc+"\n")
-	    sgStr.append(FOUR_SPACE*2+" * @since  "+commUtil.getCurDate()+"\n" )
-	    sgStr.append(FOUR_SPACE*2+" */ "+"\n")
-	    sgStr.append(FOUR_SPACE*2+"public void set"+detail.entity_name[0].upper()+detail.entity_name[1:]+"("+detail.field_dataType+" "+detail.entity_name+"){ \n")
-	    sgStr.append(FOUR_SPACE*3+"this."+detail.entity_name+"=("+detail.entity_name+"==null)?\"\" : "+detail.entity_name+"; \n")
-	    sgStr.append(FOUR_SPACE*2+"} "+"\n")
+	    sgStr.append(FOUR_SPACE+"/** "+"\n")
+	    sgStr.append(FOUR_SPACE+" * "+"設定"+detail.field_desc+"\n")
+	    sgStr.append(FOUR_SPACE+" * @since  "+commUtil.getCurDate()+"\n" )
+	    sgStr.append(FOUR_SPACE+" */ "+"\n")
+	    sgStr.append(FOUR_SPACE+"public void set"+detail.entity_name[0].upper()+detail.entity_name[1:]+"("+detail.field_dataType+" "+detail.entity_name+"){ \n")
+	    sgStr.append(FOUR_SPACE*2+"this."+detail.entity_name+"=("+detail.entity_name+"==null)?\"\" : "+detail.entity_name+"; \n")
+	    sgStr.append(FOUR_SPACE+"} "+"\n"*2)
 	    #getter
-	    sgStr.append(FOUR_SPACE*2+"/** "+"\n")
-	    sgStr.append(FOUR_SPACE*2+" * "+"取得"+detail.field_desc+"\n")
-	    sgStr.append(FOUR_SPACE*2+" * @since  "+commUtil.getCurDate()+"\n" )
-	    sgStr.append(FOUR_SPACE*2+" */ "+"\n")
-	    sgStr.append(FOUR_SPACE*2+"public "+detail.field_dataType+" get"+detail.entity_name[0].upper()+detail.entity_name[1:]+"(){ \n")
-	    sgStr.append(FOUR_SPACE*3+" return this."+detail.entity_name+" \n")
-	    sgStr.append(FOUR_SPACE*2+"} "+"\n")
+	    sgStr.append(FOUR_SPACE+"/** "+"\n")
+	    sgStr.append(FOUR_SPACE+" * "+"取得"+detail.field_desc+"\n")
+	    sgStr.append(FOUR_SPACE+" * @since  "+commUtil.getCurDate()+"\n" )
+	    sgStr.append(FOUR_SPACE+" */ "+"\n")
+	    sgStr.append(FOUR_SPACE+"public "+detail.field_dataType+" get"+detail.entity_name[0].upper()+detail.entity_name[1:]+"(){ \n")
+	    sgStr.append(FOUR_SPACE*2+" return this."+detail.entity_name+" \n")
+	    sgStr.append(FOUR_SPACE+"} "+"\n"*2)
 	return ''.join(sgStr)
 	
 
@@ -322,13 +333,13 @@ def getJPA1Repository(bean):
 	context.append(FOUR_SPACE+"public final static String AppId = \""+entity_name.upper()+" \" ; "+"\n")
 	context.append(FOUR_SPACE+"public final static String CLASS_VERSION =\"\" ; "+"\n")
 	context.append("\n"*2)
-	count = getPKCount(bean.bean_detail)
+	count = getPKCount(bean)
 	#method
 	no=1
 	where=[]
 	param=[]
 	for detail in bean.bean_master.get_detail() : 
-	    print "no:"+str(no)
+	    #print "no:"+str(no)
 	    if detail.field_isKey.upper() == "Y":
 	       where.append(" b."+detail.field_name+"=:"+detail.field_name)
 	       data_type = "Date" if detail.field_dataType.upper() == "TIME" else detail.field_dataType
@@ -347,7 +358,7 @@ def getJPA1Repository(bean):
 	context.append("\n\n"+"}"+"\n")
 	return title + packageName+ getImportDAOJar(importp)+''.join(context)
 
-def getPKCount(detail):
+def getPKCount(bean):
 	pk_count=0
 	for detail in bean.bean_master.get_detail() : 
 	    if detail.field_isKey.upper() == "Y":
@@ -369,12 +380,12 @@ def getImportDAOJar(importp):
 
 
 def getBeanClassName(entity_name):
-	return entity_name+"Bean"
+	return entity_name+BEAN_PRE_NAME
 
 def getPKClassName(entity_name):
-	return entity_name+"BeanPK"
+	return entity_name+BEAN_PK_NAME
 
 def getRepositoryClassName(entity_name):
-	return entity_name+"Repository"
+	return entity_name+BEAN_REPOSITORY_NAME
 
 
